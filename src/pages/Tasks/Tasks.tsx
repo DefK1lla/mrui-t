@@ -1,7 +1,8 @@
-import { Stack, Button, Container, Box, Typography } from '@mui/material'
+import { Stack, Button, Container, Box, Typography, Modal } from '@mui/material'
+import { useState } from 'react'
 import type { FC } from 'react'
 
-import { Task } from 'components'
+import { Task, TaskForm } from 'components'
 import type { ITask } from '@/types/task'
 
 import s from './tasks.module.css'
@@ -42,79 +43,89 @@ const tasksMock: ITask[] = [
 ]
 
 export const Tasks: FC = () => {
-  return (
-    <Container>
-      <Stack
-        justifyContent='start'
-        alignItems='start'
-        spacing={2}
-        minWidth={'100%'}
-      >
-        <Button>Create task</Button>
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
+  return (
+    <>
+      <Container>
         <Stack
-          direction='row'
-          justifyContent='space-around'
-          alignItems='stretch'
+          justifyContent='start'
+          alignItems='start'
           spacing={2}
           minWidth={'100%'}
         >
-          <Box>
-            <Typography variant='h4' gutterBottom>
-              To Do
-            </Typography>
-            <Stack className={s.column} spacing={2} alignItems='center'>
-              {tasksMock
-                .filter(t => t.status === 'todo')
-                .map(t => (
-                  <Task
-                    key={t.id}
-                    task={t}
-                    onRemove={console.log}
-                    onEdit={console.log}
-                    onStatusChange={console.log}
-                  />
-                ))}
-            </Stack>
-          </Box>
-          <Box>
-            <Typography variant='h4' gutterBottom>
-              In Progress
-            </Typography>
-            <Stack className={s.column} spacing={2} alignItems='center'>
-              {tasksMock
-                .filter(t => t.status === 'inprogress')
-                .map(t => (
-                  <Task
-                    key={t.id}
-                    task={t}
-                    onRemove={console.log}
-                    onEdit={console.log}
-                    onStatusChange={console.log}
-                  />
-                ))}
-            </Stack>
-          </Box>
-          <Box>
-            <Typography variant='h4' gutterBottom>
-              Completed
-            </Typography>
-            <Stack className={s.column} spacing={2} alignItems='center'>
-              {tasksMock
-                .filter(t => t.status === 'completed')
-                .map(t => (
-                  <Task
-                    key={t.id}
-                    task={t}
-                    onRemove={console.log}
-                    onEdit={console.log}
-                    onStatusChange={console.log}
-                  />
-                ))}
-            </Stack>
-          </Box>
+          <Button onClick={() => setIsOpen(true)}>Create task</Button>
+
+          <Stack
+            direction='row'
+            justifyContent='space-around'
+            alignItems='stretch'
+            spacing={2}
+            minWidth={'100%'}
+          >
+            <Box>
+              <Typography variant='h4' gutterBottom>
+                To Do
+              </Typography>
+              <Stack className={s.column} spacing={2} alignItems='center'>
+                {tasksMock
+                  .filter(t => t.status === 'todo')
+                  .map(t => (
+                    <Task
+                      key={t.id}
+                      task={t}
+                      onRemove={console.log}
+                      onEdit={console.log}
+                      onStatusChange={console.log}
+                    />
+                  ))}
+              </Stack>
+            </Box>
+            <Box>
+              <Typography variant='h4' gutterBottom>
+                In Progress
+              </Typography>
+              <Stack className={s.column} spacing={2} alignItems='center'>
+                {tasksMock
+                  .filter(t => t.status === 'inprogress')
+                  .map(t => (
+                    <Task
+                      key={t.id}
+                      task={t}
+                      onRemove={console.log}
+                      onEdit={console.log}
+                      onStatusChange={console.log}
+                    />
+                  ))}
+              </Stack>
+            </Box>
+            <Box>
+              <Typography variant='h4' gutterBottom>
+                Completed
+              </Typography>
+              <Stack className={s.column} spacing={2} alignItems='center'>
+                {tasksMock
+                  .filter(t => t.status === 'completed')
+                  .map(t => (
+                    <Task
+                      key={t.id}
+                      task={t}
+                      onRemove={console.log}
+                      onEdit={console.log}
+                      onStatusChange={console.log}
+                    />
+                  ))}
+              </Stack>
+            </Box>
+          </Stack>
         </Stack>
-      </Stack>
-    </Container>
+      </Container>
+
+      <Modal className={s.modal} open={isOpen} onClose={() => setIsOpen(false)}>
+        <Box className={s.modalBody}>
+          <TaskForm />
+        </Box>
+      </Modal>
+    </>
   )
 }

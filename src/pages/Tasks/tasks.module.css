@@ -5,4 +5,15 @@
   min-height: 100vh;
 }
 
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.modalBody {
+  width: 100%;
+  max-width: 1200px;
+  background: #fff;
+  padding: 25px;
+}
