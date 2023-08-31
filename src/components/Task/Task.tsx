@@ -20,7 +20,7 @@ interface ITaskProps {
   task: ITask
   onRemove: (id: string) => void
   onEdit: (task: ITask) => void
-  onStatusChange: (status: TStatus) => void
+  onStatusChange: (id: string, status: TStatus) => void
 }
 
 export const Task: FC<ITaskProps> = ({
@@ -30,7 +30,7 @@ export const Task: FC<ITaskProps> = ({
   onStatusChange,
 }) => {
   const handleChange = (_: MouseEvent<HTMLElement>, newStatus: TStatus) => {
-    onStatusChange(newStatus)
+    onStatusChange(task.id!, newStatus)
   }
 
   return (
@@ -68,8 +68,14 @@ export const Task: FC<ITaskProps> = ({
             direction='row'
             justifyContent='space-around'
           >
-            <Button size='small'>Edit</Button>
-            <Button size='small' color='error'>
+            <Button onClick={() => onEdit(task)} size='small'>
+              Edit
+            </Button>
+            <Button
+              onClick={() => onRemove(task.id!)}
+              size='small'
+              color='error'
+            >
               Remove
             </Button>
           </Stack>

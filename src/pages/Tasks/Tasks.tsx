@@ -1,49 +1,51 @@
-import { Stack, Button, Container, Box, Typography, Modal } from '@mui/material'
+import {
+  Stack,
+  Button,
+  Container,
+  Box,
+  Typography,
+  Modal,
+  Alert,
+} from '@mui/material'
 import { useState } from 'react'
 import type { FC } from 'react'
 
 import { Task, TaskForm } from 'components'
-import type { ITask } from '@/types/task'
+import { useTasks } from 'hooks/useTasks'
+import { ITask } from 'types/task'
 
 import s from './tasks.module.css'
 
-const tasksMock: ITask[] = [
-  {
-    id: '1',
-    title: 'task',
-    description:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem consequuntur expedita dolores, ipsa suscipit nobis odio laborum quo ducimus quia magnam, quibusdam eligendi iste laudantium incidunt sunt non, perferendis debitis!',
-    date: 'ISODate',
-    status: 'completed',
-  },
-  {
-    id: '2',
-    title: 'task',
-    description:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem consequuntur expedita dolores, ipsa suscipit nobis odio laborum quo ducimus quia magnam, quibusdam eligendi iste laudantium incidunt sunt non, perferendis debitis!',
-    date: 'ISODate',
-    status: 'inprogress',
-  },
-  {
-    id: '3',
-    title: 'task',
-    description:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem consequuntur expedita dolores, ipsa suscipit nobis odio laborum quo ducimus quia magnam, quibusdam eligendi iste laudantium incidunt sunt non, perferendis debitis!',
-    date: 'ISODate',
-    status: 'todo',
-  },
-  {
-    id: '4',
-    title: 'task',
-    description:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem consequuntur expedita dolores, ipsa suscipit nobis odio laborum quo ducimus quia magnam, quibusdam eligendi iste laudantium incidunt sunt non, perferendis debitis!',
-    date: 'ISODate',
-    status: 'completed',
-  },
-]
-
 export const Tasks: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [selectedTask, setSelectedTask] = useState<ITask | undefined>()
+
+  const { items, remove, changeStatus, edit, create, error } = useTasks()
+
+  const onClose = () => {
+    setSelectedTask(undefined)
+    setIsOpen(false)
+  }
+
+  const onOpen = () => {
+    setSelectedTask(undefined)
+    setIsOpen(true)
+  }
+
+  const onEdit = (task: ITask) => {
+    setSelectedTask(task)
+    setIsOpen(true)
+  }
+
+  const onTaskSubmit = (data: ITask) => {
+    if (data.id) {
+      edit(data)
+    } else {
+      create(data)
+    }
+
+    setIsOpen(false)
+  }
 
   return (
     <>
@@ -54,7 +56,7 @@ export const Tasks: FC = () => {
           spacing={2}
           minWidth={'100%'}
         >
-          <Button onClick={() => setIsOpen(true)}>Create task</Button>
+          <Button onClick={onOpen}>Create task</Button>
 
           <Stack
             direction='row'
@@ -68,15 +70,15 @@ export const Tasks: FC = () => {
                 To Do
               </Typography>
               <Stack className={s.column} spacing={2} alignItems='center'>
-                {tasksMock
+                {items
                   .filter(t => t.status === 'todo')
                   .map(t => (
                     <Task
                       key={t.id}
                       task={t}
-                      onRemove={console.log}
-                      onEdit={console.log}
-                      onStatusChange={console.log}
+                      onRemove={remove}
+                      onStatusChange={changeStatus}
+                      onEdit={() => onEdit(t)}
                     />
                   ))}
               </Stack>
@@ -86,15 +88,15 @@ export const Tasks: FC = () => {
                 In Progress
               </Typography>
               <Stack className={s.column} spacing={2} alignItems='center'>
-                {tasksMock
+                {items
                   .filter(t => t.status === 'inprogress')
                   .map(t => (
                     <Task
                       key={t.id}
                       task={t}
-                      onRemove={console.log}
-                      onEdit={console.log}
-                      onStatusChange={console.log}
+                      onRemove={remove}
+                      onStatusChange={changeStatus}
+                      onEdit={() => onEdit(t)}
                     />
                   ))}
               </Stack>
@@ -104,15 +106,15 @@ export const Tasks: FC = () => {
                 Completed
               </Typography>
               <Stack className={s.column} spacing={2} alignItems='center'>
-                {tasksMock
+                {items
                   .filter(t => t.status === 'completed')
                   .map(t => (
                     <Task
                       key={t.id}
                       task={t}
-                      onRemove={console.log}
-                      onEdit={console.log}
-                      onStatusChange={console.log}
+                      onRemove={remove}
+                      onStatusChange={changeStatus}
+                      onEdit={() => onEdit(t)}
                     />
                   ))}
               </Stack>
@@ -121,11 +123,12 @@ export const Tasks: FC = () => {
         </Stack>
       </Container>
 
-      <Modal className={s.modal} open={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal className={s.modal} open={isOpen} onClose={onClose}>
         <Box className={s.modalBody}>
-          <TaskForm />
+          <TaskForm initialValue={selectedTask} onSubmit={onTaskSubmit} />
         </Box>
       </Modal>
+      {error && <Alert color='error'>{error}</Alert>}
     </>
   )
 }
