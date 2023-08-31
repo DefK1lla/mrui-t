@@ -1,10 +1,10 @@
 import './App.css'
-import { Tasks } from './pages'
+import { Auth } from './pages/Auth/Auth'
 
 const App: React.FC = () => {
   return (
     <div className='App'>
-      <Tasks />
+      <Auth />
     </div>
   )
 }
