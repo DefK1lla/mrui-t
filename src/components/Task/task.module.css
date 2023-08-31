@@ -1,0 +1,11 @@
+.card {
+  max-width: 320px;
+}
+
+.info {
+  margin-bottom: 20px;
+}
+
+.body {
+  text-align: left;
+}
