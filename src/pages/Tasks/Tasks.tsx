@@ -11,16 +11,19 @@ import { useState } from 'react'
 import type { FC } from 'react'
 
 import { Task, TaskForm } from 'components'
+import { withAuth } from 'hoc/withAuth'
 import { useTasks } from 'hooks/useTasks'
+import { useAuth } from 'hooks/useAuth'
 import { ITask } from 'types/task'
 
 import s from './tasks.module.css'
 
-export const Tasks: FC = () => {
+export const Tasks: FC = withAuth(() => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedTask, setSelectedTask] = useState<ITask | undefined>()
 
   const { items, remove, changeStatus, edit, create, error } = useTasks()
+  const { logout } = useAuth()
 
   const onClose = () => {
     setSelectedTask(undefined)
@@ -56,7 +59,14 @@ export const Tasks: FC = () => {
           spacing={2}
           minWidth={'100%'}
         >
-          <Button onClick={onOpen}>Create task</Button>
+          <Stack
+            minWidth={'100%'}
+            justifyContent='space-between'
+            direction='row'
+          >
+            <Button onClick={onOpen}>Create task</Button>
+            <Button onClick={logout}>Logout</Button>
+          </Stack>
 
           <Stack
             direction='row'
@@ -131,4 +141,4 @@ export const Tasks: FC = () => {
       {error && <Alert color='error'>{error}</Alert>}
     </>
   )
-}
+})

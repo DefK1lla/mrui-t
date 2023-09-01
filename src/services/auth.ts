@@ -44,6 +44,21 @@ class AuthService {
     localStorage.setItem('token', token)
     return token
   }
+
+  static check = () => {
+    const usersRaw = localStorage.getItem('users')
+    const token = localStorage.getItem('token')
+    if (!usersRaw || !token) return false
+
+    const users: IUserData[] = JSON.parse(usersRaw)
+    const currentUser: IUserData = JSON.parse(atob(token))
+
+    return !!users.find(u => u.email === currentUser.email)
+  }
+
+  static logout = () => {
+    localStorage.removeItem('token')
+  }
 }
 
 export default AuthService
