@@ -10,7 +10,7 @@ import {
 import { useState } from 'react'
 import type { FC } from 'react'
 
-import { Task, TaskForm } from 'components'
+import { Task, TaskForm, TasksFilter } from 'components'
 import { withAuth } from 'hoc/withAuth'
 import { useTasks } from 'hooks/useTasks'
 import { useAuth } from 'hooks/useAuth'
@@ -22,7 +22,8 @@ export const Tasks: FC = withAuth(() => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedTask, setSelectedTask] = useState<ITask | undefined>()
 
-  const { items, remove, changeStatus, edit, create, error } = useTasks()
+  const { items, remove, changeStatus, edit, create, setFilter, error } =
+    useTasks()
   const { logout } = useAuth()
 
   const onClose = () => {
@@ -67,6 +68,8 @@ export const Tasks: FC = withAuth(() => {
             <Button onClick={onOpen}>Create task</Button>
             <Button onClick={logout}>Logout</Button>
           </Stack>
+
+          <TasksFilter onChange={setFilter} />
 
           <Stack
             direction='row'

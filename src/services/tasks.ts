@@ -2,11 +2,35 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { ITask } from 'types/task'
 import { TStatus } from 'types/status'
+import { ITaskFilterParams } from 'types/filter'
 
 class TasksService {
-  static getAll = () => {
+  static getAll = (params: ITaskFilterParams = {}) => {
     const tasksRaw = localStorage.getItem('tasks')
-    return tasksRaw ? JSON.parse(tasksRaw) : []
+
+    if (!tasksRaw) return []
+
+    let tasks: ITask[] = JSON.parse(tasksRaw)
+
+    const { keyword, date } = params
+    const from = date?.from
+    const to = date?.to
+
+    if (keyword) {
+      tasks = tasks.filter(t =>
+        t.title.toLowerCase().includes(keyword.toLowerCase())
+      )
+    }
+
+    if (from) {
+      tasks = tasks.filter(t => Date.parse(t.date) >= Date.parse(from))
+    }
+
+    if (to) {
+      tasks = tasks.filter(t => Date.parse(t.date) <= Date.parse(to))
+    }
+
+    return tasks
   }
 
   static create = (task: ITask) => {

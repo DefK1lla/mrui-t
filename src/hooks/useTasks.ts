@@ -3,14 +3,16 @@ import { useEffect, useState } from 'react'
 import TasksService from 'services/tasks'
 import { TStatus } from 'types/status'
 import { ITask } from 'types/task'
+import type { ITaskFilterParams } from 'types/filter'
 
 export const useTasks = () => {
   const [items, setItems] = useState<ITask[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [filter, setFilter] = useState<ITaskFilterParams>({})
 
   useEffect(() => {
-    setItems(TasksService.getAll())
-  }, [])
+    setItems(TasksService.getAll(filter))
+  }, [filter])
 
   const create = (task: ITask) => {
     try {
@@ -55,6 +57,7 @@ export const useTasks = () => {
     remove,
     changeStatus,
     edit,
+    setFilter,
     create,
     error,
   }
